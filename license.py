@@ -78,6 +78,7 @@ def keycheck() :
 
 def timecheck() :
     if not os.path.isfile('C:/Users/Public/Everything.key'):
+
         timefile = open('C:/Users/Public/Everything.key','wb')
         seconds = time.time()
         licexp = seconds + 31536000
@@ -107,59 +108,89 @@ def licenseVerification() :
 
     if not os.path.isfile('C:/Users/Public/License.key') :
         flag = True
-
         while flag == True :
             exptime = timecheck()
             if exptime != 'License Expired.' :
-                print('Your License will expire on : ',exptime)
-            l_key = input('Enter license key : ')
+                print('Your New License will expire on : ',exptime)
+            l_key = input('Enter License Key : ')
             with open('C:/Users/Public/License.key','w') as newlicensefile :
                 newlicensefile.write(l_key)
                 newlicensefile.close()
 
             with open('C:/Users/Public/License.key','rb') as l_check :
                 for line in l_check :
-                    ddsn = os.popen("wmic diskdrive get serialnumber").read().split()[-1]
+                    ddsn = os.popen("wmic diskdrive get SerialNumber").read().split()[1]
                     license = decrypt_message(line)
-
                     if license == 'Prerak'+ddsn+'MomoCartoonYellow'+exptime :           #1
+
                         print('License key verified.')
                         #timecheck()
                         flag = False
 
                     elif license == 'incorrectFormat':                                  #2
                         print('Incorrect format of license.')
-                        os.remove('C:/Users/Public/Everything.key')
+                        seconds = time.time()
+                        exptimedt = time.strptime(exptime)
+                        exptimesec = time.mktime(exptimedt)
+                        if exptimesec < seconds:
+                            os.remove('C:/Users/Public/Everything.key')
                         break
 
 
                     else:                                                               #3
                         print('\nLicense key not correct')
                         print('Please enter correct license key again.\n')
-                        os.remove('C:/Users/Public/Everything.key')
+                        seconds = time.time()
+                        exptimedt = time.strptime(exptime)
+                        exptimesec = time.mktime(exptimedt)
+                        if exptimesec < seconds:
+                            os.remove('C:/Users/Public/Everything.key')
                         break
 
     else :
-
         exptime = timecheck()
-        ddsn = os.popen("wmic diskdrive get serialnumber").read().split()[-1]
+
+        ddsn = os.popen("wmic diskdrive get SerialNumber").read().split()[1]
+
         with open('C:/Users/Public/License.key','rb') as l_check :
-            for line in l_check :
-                license = decrypt_message(line)
 
-            if license == 'Prerak'+ddsn+'MomoCartoonYellow'+exptime :
-                print('License verified.')
+            lolf = l_check.read()
 
-            elif license == 'incorrectFormat':
-                print('Incorrect Format of License.')
+            if len(lolf) < 1:
                 l_check.close()
                 os.remove('C:/Users/Public/Everything.key')
                 os.remove('C:/Users/Public/License.key')
+
                 licenseVerification()
 
             else:
-                print('License not Valid')
                 l_check.close()
-                os.remove('C:/Users/Public/Everything.key')
-                os.remove('C:/Users/Public/License.key')
-                licenseVerification()
+                l_check = open('C:/Users/Public/License.key','rb')
+
+                for line in l_check :
+
+                    license = decrypt_message(line)
+
+                    if license == 'Prerak'+ddsn+'MomoCartoonYellow'+exptime :
+
+                        print('License verified.')
+
+                    elif license == 'incorrectFormat':
+
+                        print('Incorrect Format of License.')
+                        l_check.close()
+                        os.remove('C:/Users/Public/Everything.key')
+                        os.remove('C:/Users/Public/License.key')
+
+                        licenseVerification()
+
+                    else:
+
+                        print('License not Valid')
+                        l_check.close()
+                        os.remove('C:/Users/Public/Everything.key')
+                        os.remove('C:/Users/Public/License.key')
+
+                        licenseVerification()
+                        break
+                        
