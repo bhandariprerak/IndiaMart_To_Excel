@@ -8,6 +8,9 @@ import os
 from license import encrypt_message,decrypt_message,mobilecheck,keycheck,licenseVerification,timecheck
 from functions import monthyear,path
 import time
+from eula import eulafile
+
+eulafile()
 
 try :
     os.makedirs('C:/IndiaMart Excel/')
@@ -19,9 +22,11 @@ try :
     print('  4. If the Month-Year already exists, then a new sheet will be added to the file.\n')
     print('  5. It is adviced to run this software in a gap of at least 15 minutes as per IndiaMart norms.\n')
     print('  6. Please do not share your IndiaMart Key with anyone. It can be used to access your data.\n')
+    print('  7. Your details will be protected using Advanced Encyption.\n')
     print('\n"IndiaMart Excel" folder created in "C:/IndiaMart Excel/"\n')
 except :
     print('\nWelcome to the "IndiaMart to Excel" software by Prerak Bhandari.\n')
+    print('You are using Advanced Encryption.')
     print('\n"IndiaMart Excel" folder exists in "C:/IndiaMart Excel"\n')
 if not os.path.isfile('C:/Users/Public/IndiaMart_Mobile_Data.key'):
     datafile = open('C:/Users/Public/IndiaMart_Mobile_Data.key','w+')
@@ -46,21 +51,27 @@ GLUSR_MOBILE = None
 GLUSR_MOBILE_KEY = None
 GLUSR_MOBILE = mobilecheck()
 GLUSR_MOBILE_KEY = keycheck()
-print('Your Product Number is : ',os.popen("wmic diskdrive get serialnumber").read().split()[-1])
-expTIME = timecheck()
-if expTIME == 'License Expired.' :
-    timefile = open('C:/Users/Public/Everything.key','rb')
-    for line in timefile :
-        seconds = time.time()
-        exptimestr = decrypt_message(line)
-        print('Your License has Expired on %s . Kindly renew your License\n'%exptimestr)
-    timefile.close()
-    #os.remove('C:/Users/Public/Everything.key')
+print('Your Product Number is : ',os.popen("wmic diskdrive get SerialNumber").read().split()[1])
+print()
+try:
+    expTIME = timecheck()
+    if expTIME == 'License Expired.' :
+        timefile = open('C:/Users/Public/Everything.key','rb')
+        for line in timefile :
+            seconds = time.time()
+            exptimestr = decrypt_message(line)
+            print('Your License has Expired on %s\nKindly renew your License\n'%exptimestr)
+            timefile.close()
+except:
+    print('Error in Main Program : TC')
 else :
-    print('Your License will expire on : ',expTIME)
+    print('Your License is valid till : ',expTIME)
+    print()
 
-
-licenseVerification()
+try:
+    licenseVerification()
+except:
+    print('Error in Main Program : LV')
 
 print('\nThe maximum difference of start date and end date should be 7 days.\nIf more than that is given ,then 7 days before end date will be considered.\n')
 

@@ -111,7 +111,7 @@ def licenseVerification() :
         while flag == True :
             exptime = timecheck()
             if exptime != 'License Expired.' :
-                print('Your New License will expire on : ',exptime)
+                print('Your New License will be valid till : ',exptime)
             l_key = input('Enter License Key : ')
             with open('C:/Users/Public/License.key','w') as newlicensefile :
                 newlicensefile.write(l_key)
@@ -193,4 +193,3 @@ def licenseVerification() :
 
                         licenseVerification()
                         break
-                        
