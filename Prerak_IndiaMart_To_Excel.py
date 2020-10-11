@@ -10,7 +10,8 @@ from functions import monthyear,path
 import time
 from eula import eulafile
 
-eulafile()
+if not os.path.isfile('C:/Users/Public/EULA.txt') :
+    eulafile()
 
 try :
     os.makedirs('C:/IndiaMart Excel/')
