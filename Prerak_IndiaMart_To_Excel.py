@@ -110,5 +110,8 @@ while True :
         df.to_excel(filepath ,index = False, sheet_name = Start_Time+' to '+End_Time)
 
     print("\nExcel file successfully made.\n")
+    path = "C:/IndiaMart Excel"
+    path = os.path.realpath(path)
+    os.startfile(path)
 print('\nThank you for using this software.\n~Prerak Bhandari\n')
 time.sleep(1.5)
